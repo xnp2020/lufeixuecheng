@@ -8,11 +8,13 @@
 @版本        :1.0
 '''
 
+
+import sys
+import signal
 import multiprocessing
 from datetime import datetime
 import re
-
-
+import time
 import zipfile
 import os
 
@@ -25,7 +27,6 @@ def unzipfile(zip_file, extract_to):  # 解压 ZIP 文件到指定目录
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
         # 解压所有文件到目标目录
         zip_ref.extractall(extract_to)
-    print(f"{zip_file} 解压完成")
 
 
 def all_files(root_dir):  # 获取目录下所有的日志文件
@@ -53,7 +54,8 @@ def all_files(root_dir):  # 获取目录下所有的日志文件
     return need_log_files
 
 
-def delay_job_stat(need_log_file):
+def delay_job_stat(need_log_file, lock, dest_file):  # 处理文件，并将结果写入文件
+    func_begin_time = time.time()
     # 找到文件中所有的job_id
     pattern = re.compile(r'(?<=jobid\s)[a-fA-F0-9]{32}(?=\s未在分布式队列中)')
 
@@ -96,25 +98,42 @@ def delay_job_stat(need_log_file):
     file_stat_result += f'job_id有2个时间的数量: {have_2_time_job_cnt}\n'
     file_stat_result += f'作业总数：{len(job_id_list)}\n\n'
 
-    return file_stat_result
+    with open(dest_file, 'a', encoding='utf-8') as f:
+        lock.acquire()  # 获取文件锁
+        try:
+            f.write(file_stat_result)
+        finally:
+            lock.release()  # 释放文件锁
+    func_end_time = time.time()
+    print(f'处理文件{need_log_file}消耗时长{round(func_end_time-func_begin_time,2)}秒')
 
 
-def setcallback(file_stat_result):  # 定义回调函数，将日志文件后的结果写入文件
-    with open('200.txt', 'a', encoding='utf-8') as f:
-        f.write(file_stat_result)
+def signal_handler(signum, frame):  # 处理Ctrl+c信号
+    print(f"Received signal {signum}, stopping all processes")
+    for process in multiprocessing.active_children():
+        process.terminate()
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
+
+    lock = multiprocessing.Lock()
+
     # 指定要处理的目录
     root_dir = r'C:\Users\xnp2010\Documents\WeChat Files\wxid_7zt3seoqst7522\FileStorage\File\2024-03\printhub\printhub\10.20.33.10\printhub'
+    dest_file = '10.20.33.10.txt'
     # 从目录中提取要处理的日志文件
     need_log_files = all_files(root_dir)
 
-    pool = multiprocessing.Pool(6)
-    for need_log_file in need_log_files:
-        pool.apply_async(func=delay_job_stat, args=(
-            need_log_file,), callback=setcallback)
+    processes = []
 
-    pool.close()
-    pool.join()
-    print("All processes completed")
+    for need_log_file in need_log_files:
+        p = multiprocessing.Process(
+            target=delay_job_stat, args=(need_log_file, lock, dest_file))
+        processes.append(p)
+        p.start()
+
+    for process in processes:
+        process.join()
+
+    print("All processes finished")

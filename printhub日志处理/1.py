@@ -1,9 +1,19 @@
+import os
+import multiprocessing
+from multiprocessing import Process
 
-mylist = ['C:\\Users\\xnp2010\\Documents\\WeChat Files\\wxid_7zt3seoqst7522\\FileStorage\\File\\2024-03\\printhub\\printhub\\10.20.33.10\\printhub\\printhub-01.0', 'C:\\Users\\xnp2010\\Documents\\WeChat Files\\wxid_7zt3seoqst7522\\FileStorage\\File\\2024-03\\printhub\\printhub\\10.20.33.10\\printhub\\printhub-01.1',
-          'C:\\Users\\xnp2010\\Documents\\WeChat Files\\wxid_7zt3seoqst7522\\FileStorage\\File\\2024-03\\printhub\\printhub\\10.20.33.10\\printhub\\printhub-01.2', 'C:\\Users\\xnp2010\\Documents\\WeChat Files\\wxid_7zt3seoqst7522\\FileStorage\\File\\2024-03\\printhub\\printhub\\10.20.33.10\\printhub\\printhub.log']
+
+def write_file(l, file_path):
+    l.acquire()
+    try:
+        with open(file_path, 'a') as f:
+            f.write(str(os.getpid()) + '_' + str(id(l)))
+            f.write('\n')
+    finally:
+        l.release()
 
 
-# with open('101.txt', 'w', encoding='utf-8') as f:
-
-#     f.write('1')
-name = '1'
+if __name__ == '__main__':
+    l = multiprocessing.Lock()
+    for num in range(10):
+        Process(target=write_file, args=(l, './file.txt')).start()

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路飞学城</title>
+    <style>
+        .mycontainer {
+            display: grid;
+            width: 60%;
+            /* width: 300px; */
+            margin: 0 auto;
+            grid-template-columns: 30% 70%;
+            border: 1px solid red;
+        }
+
+        .container-left {
+            margin-left: 50px;
+            margin-bottom: 18px;
+        }
+
+        div>p {
+            font-size: 18px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 16px;
+            font-family: PingFangSC-Regular;
+        }
+
+        span {
+
+            font-size: 14px;
+            font-weight: 400;
+            color: #999;
+            font-family: PingFangSC-Regular;
+        }
+    </style>
+</head>
+
+
+<body>
+    <p style="text-align: center;font-weight:bold;font-size: large;margin-top: 10%;">帮助有志向的年轻人通过努力学习获得体面的工作和生活</p>
+    <div class="mycontainer">
+        <div style="background-color:lightskyblue;">
+            <img src="head-logo_1564141048.3435316.svg" alt="路飞学城">
+            <div class="container-left">
+                <p>学</p>
+                <span>名师前沿精品课程</span>
+            </div>
+
+            <div class="container-left">
+                <p>练</p>
+                <span>章节作业 + 阶段测试</span>
+            </div>
+
+            <div class="container-left">
+                <p>改</p>
+                <span>逐行代码批改</span>
+            </div>
+
+            <div class="container-left">
+                <p>管</p>
+                <span>1V1导师 + 班主任督学</span>
+            </div>
+
+            <div class="container-left">
+                <p>测</p>
+                <span>1V1考核 + 阶段测试</span>
+            </div>
+
+        </div>
+        <div style="margin: auto;">
+            <h2>新用户注册</h2>
+            <form action="/api/user_register">
+                <label for="phone"></label><br>
+                <input type="text" id="phone" name="phone" placeholder="手机号"><br>
+                <label for="CAPTCHA"></label><br>
+                <input type="text" id="CAPTCHA" name="CAPTCHA" placeholder="验证码"><br>
+                <label for="password"></label><br>
+                <input type="text" id="password" name="password" placeholder="密码">
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

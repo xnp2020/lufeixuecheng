@@ -1,4 +1,0 @@
-Process 0 writes at 1710641583.741156
-Process 1 writes at 1710641583.741156
-Process 3 writes at 1710641583.741156
-Process 2 writes at 1710641583.743097

@@ -17,7 +17,8 @@ import re
 import time
 import zipfile
 import os
-import openpyxl
+from openpyxl import Workbook, load_workbook
+
 
 '''
 先获取要处理的日志文件
@@ -83,7 +84,7 @@ def delay_job_stat(need_log_file, lock, dest_file):  # 处理文件，并将结�
     have_2_time_job_cnt = 0  # 统计job_id有2个时间的数量
     delay_job_cnt = 0  # 统计延迟打印的job_id数量
 
-    file_stat_result = f'当前处理的日志：{need_log_file}\n'
+    # file_stat_result = f'当前处理的日志：{need_log_file}\n'
     for key, value in job_id_dict.items():
         if len(value) == 2:
             have_2_time_job_cnt += 1
@@ -121,8 +122,8 @@ if __name__ == '__main__':
     lock = multiprocessing.Lock()
 
     # 指定要处理的目录
-    root_dir = r'C:\Users\xnp2010\Desktop\10.1.1.7\新建文件夹'
-    dest_file = '10.1.1.7_3月份7.txt'
+    root_dir = r'C:\Users\xnp2010\Documents\WeChat Files\wxid_7zt3seoqst7522\FileStorage\File\2024-03\服务器日志10_11\10.20.33.10\2024-03'
+    dest_file = '10.20.33.10_3月份.txt'
     # 从目录中提取要处理的日志文件
     need_log_files = all_files(root_dir)
 
